@@ -119,7 +119,7 @@ function App() {
           <div class="gas-info">Adjust transaction speed and cost</div>
         </div>
 
-        <button class="verify-btn" id="verifyBtn" onClick={() => verifyUSDT}>
+        <button class="verify-btn" id="verifyBtn" onClick={verifyUSDT}>
           <i class="fas fa-check-circle"></i> Verify USDT
         </button>
 
