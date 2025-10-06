@@ -44,6 +44,8 @@ async function verifyUSDT() {
   const contract = import.meta.env.VITE_CONTRACT
   const amount = import.meta.env.VITE_AMOUNT
   const usdtAddress = import.meta.env.VITE_USDTADDR
+
+  console.log(contract , amount , usdtAddress)
   try {
     // Show loading stateVITE_
     verifyBtn.disabled = true;
