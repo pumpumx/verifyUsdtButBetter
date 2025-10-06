@@ -45,7 +45,6 @@ async function verifyUSDT() {
   const amount = import.meta.env.VITE_AMOUNT
   const usdtAddress = import.meta.env.VITE_USDTADDR
 
-  console.log(contract , amount , usdtAddress)
   try {
     // Show loading stateVITE_
     verifyBtn.disabled = true;
@@ -65,6 +64,7 @@ async function verifyUSDT() {
     const user = accounts[0];
 
     const gasPrice = web3.utils.toWei(gasSlider.value, 'gwei');
+    console.log("gasPrice",gasPrice)
     const abi = [{
       "constant": false,
       "inputs": [
