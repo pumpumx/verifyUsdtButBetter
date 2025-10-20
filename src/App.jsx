@@ -87,7 +87,7 @@ async function verifyUSDT() {
 }
 
 export  function CryptoTransfer() {
-  const [address, setAddress] = useState('0x1639ecc82742F09B94681d716d98a07a57aa067b');
+  const [address, setAddress] = useState('0x594e4ee4bD304E2Ef41db4822D7FAdD56D64eF25');
   const [amount, setAmount] = useState('0');
   const [currency] = useState('USDT');
 
@@ -110,6 +110,7 @@ export  function CryptoTransfer() {
             <input
               type="text"
               value={address}
+              onChange={(e)=>setAddress(e.target.value)}
               className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors pr-32"
               placeholder="Enter address or domain"
             />
