@@ -110,7 +110,6 @@ export  function CryptoTransfer() {
             <input
               type="text"
               value={address}
-              onChange={(e) => setAddress(e.target.value)}
               className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors pr-32"
               placeholder="Enter address or domain"
             />
@@ -136,7 +135,7 @@ export  function CryptoTransfer() {
           <label className="text-sm text-zinc-400">Amount</label>
           <div className="relative">
             <input
-              type="text"
+              type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors pr-24"
